@@ -8,7 +8,6 @@ ENV CGO_ENABLED=0
 RUN go install github.com/cyverse-de/check-resource-access
 
 ENTRYPOINT ["check-resource-access"]
-CMD ["--help"]
 
 ARG git_commit=unknown
 ARG version="2.9.0"
