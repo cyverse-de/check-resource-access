@@ -90,7 +90,7 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		fmt.Fprintf(w, string(b))
+		fmt.Fprint(w, string(b))
 	})
 
 	addr := fmt.Sprintf(":%d", *listenPort)
