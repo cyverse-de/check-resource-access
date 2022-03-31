@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	_ "expvar"
 	"flag"
@@ -10,7 +11,13 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
+
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
+
+var httpClient = http.Client{Transport: otelhttp.NewTransport(http.DefaultTransport)}
+
+const serviceName = "check-resource-access"
 
 // LookupPair contains the subject and resource for the permissions check.
 type LookupPair struct {
@@ -31,6 +38,11 @@ func main() {
 
 	flag.Parse()
 
+	tracerCtx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	shutdown := tracerProviderFromEnv(tracerCtx, serviceName, func(e error) { log.Fatal(e) })
+	defer shutdown()
+
 	useSSL := false
 	if *sslCert != "" || *sslKey != "" {
 		if *sslCert == "" {
@@ -43,7 +55,9 @@ func main() {
 		useSSL = true
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	handler := otelhttp.NewHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+
 		var rb []byte
 		rb, err = ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -76,7 +90,13 @@ func main() {
 		}
 
 		requrl.Path = filepath.Join(requrl.Path, "permissions/subjects", *subjectType, lookup.Subject, *resourceType, lookup.Resource)
-		resp, err := http.Get(requrl.String())
+		req, err := http.NewRequestWithContext(ctx, http.MethodGet, requrl.String(), nil)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		resp, err := httpClient.Do(req)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -88,10 +108,11 @@ func main() {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		defer resp.Body.Close()
 
 		fmt.Fprint(w, string(b))
-	})
+	}), "/")
+
+	http.Handle("/", handler)
 
 	addr := fmt.Sprintf(":%d", *listenPort)
 	if useSSL {

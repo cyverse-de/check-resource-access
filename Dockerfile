@@ -1,11 +1,13 @@
-FROM golang:1.11-alpine
+FROM golang:1.17-alpine
 
 RUN apk add --no-cache git
 RUN go get -u github.com/jstemmer/go-junit-report
 
-COPY . /go/src/github.com/cyverse-de/check-resource-access
+WORKDIR /build
+
+COPY . .
 ENV CGO_ENABLED=0
-RUN go install github.com/cyverse-de/check-resource-access
+RUN go install -v ./...
 
 ENTRYPOINT ["check-resource-access"]
 
