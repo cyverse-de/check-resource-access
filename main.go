@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"path/filepath"
 
+	"github.com/cyverse-de/go-mod/otelutils"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
@@ -40,7 +41,7 @@ func main() {
 
 	tracerCtx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	shutdown := tracerProviderFromEnv(tracerCtx, serviceName, func(e error) { log.Fatal(e) })
+	shutdown := otelutils.TracerProviderFromEnv(tracerCtx, serviceName, func(e error) { log.Fatal(e) })
 	defer shutdown()
 
 	useSSL := false

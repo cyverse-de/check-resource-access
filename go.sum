@@ -1,3 +1,5 @@
+github.com/cyverse-de/go-mod/otelutils v0.0.1 h1:DAkj2tn8umxM7j9+zokrsQK/q5HTWQT8YjuE1+4xruE=
+github.com/cyverse-de/go-mod/otelutils v0.0.1/go.mod h1:8P2jRGnvUsH4qtyVP0W6KiV5iSr102pLkzKFgkYJ4og=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/felixge/httpsnoop v1.0.2 h1:+nS9g82KMXccJ/wp0zyRW9ZBHFETmMGtkk+2CTTrW4o=
