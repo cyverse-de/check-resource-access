@@ -3,7 +3,7 @@ module github.com/cyverse-de/check-resource-access
 go 1.17
 
 require (
-	github.com/cyverse-de/go-mod/otelutils v0.0.1
+	github.com/cyverse-de/go-mod/otelutils v0.0.2
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.31.0
 )
 
@@ -18,5 +18,5 @@ require (
 	go.opentelemetry.io/otel/metric v0.28.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.6.1 // indirect
 	go.opentelemetry.io/otel/trace v1.6.1 // indirect
-	golang.org/x/sys v0.0.0-20210423185535-09eb48e85fd7 // indirect
+	golang.org/x/sys v0.0.0-20220403205710-6acee93ad0eb // indirect
 )
