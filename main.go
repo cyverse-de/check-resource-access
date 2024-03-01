@@ -6,7 +6,7 @@ import (
 	_ "expvar"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -60,7 +60,7 @@ func main() {
 		ctx := r.Context()
 
 		var rb []byte
-		rb, err = ioutil.ReadAll(r.Body)
+		rb, err = io.ReadAll(r.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
@@ -104,7 +104,7 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		b, err := ioutil.ReadAll(resp.Body)
+		b, err := io.ReadAll(resp.Body)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
